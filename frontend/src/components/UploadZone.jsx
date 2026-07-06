@@ -61,7 +61,7 @@ const UploadZone = ({ onFileSelect }) => {
         type="file"
         ref={fileInputRef}
         onChange={handleChange}
-        accept="image/*,video/mp4,video/webm,video/quicktime"
+        accept="image/*,video/*"
       />
       <div className="upload-icon">
         <UploadCloud size={48} />
