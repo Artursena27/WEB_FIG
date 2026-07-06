@@ -1,0 +1,10 @@
+# Segredos — NUNCA commitar
+railway_key.json
+.env
+*.local
+
+# Dependências
+node_modules/
+
+# Uploads temporários
+backend/uploads/
