@@ -48,13 +48,16 @@ router.post('/convert', upload.single('file'), async (req, res) => {
     console.log(`Processing file: ${originalname} (${mimetype})`);
 
     // Determine type
-    if (mimetype.startsWith('video/') || mimetype === 'image/gif') {
-      // Process as animated sticker
+    if (mimetype.startsWith('video/')) {
+      // Process as animated sticker using ffmpeg
       await processVideo(inputPath, outputPath);
       isAnimated = true;
     } else if (mimetype.startsWith('image/')) {
-      // Process as static sticker
+      // Process as static or animated sticker using sharp
       await processImage(inputPath, outputPath, shouldRemoveBg);
+      if (mimetype === 'image/gif') {
+        isAnimated = true;
+      }
     } else {
       return res.status(400).json({ error: 'Unsupported file type' });
     }

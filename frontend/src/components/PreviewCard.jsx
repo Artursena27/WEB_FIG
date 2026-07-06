@@ -24,8 +24,6 @@ const PreviewCard = ({ stickerUrl, isAnimated, fileSize, onReset }) => {
         const file = new File([blob], `sticker.webp`, { type: 'image/webp' });
         
         await navigator.share({
-          title: 'Minha Figurinha',
-          text: 'Olha essa figurinha que eu criei!',
           files: [file]
         });
       } catch (err) {
