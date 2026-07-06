@@ -19,7 +19,8 @@ app.use('/api/stickers', stickerRoutes);
 const frontendDist = path.join(__dirname, '../frontend/dist');
 app.use(express.static(frontendDist));
 
-app.get('*', (req, res) => {
+// Catch-all route to serve the React app for any other requests
+app.use((req, res) => {
   res.sendFile(path.join(frontendDist, 'index.html'));
 });
 
