@@ -12,6 +12,24 @@ function phoneNumberId() {
   return process.env.PHONE_NUMBER_ID;
 }
 
+/**
+ * Brazilian "nono dígito" fix: WhatsApp webhooks report BR mobiles WITHOUT the
+ * 9th digit (e.g. 558182267438), but the API expects it WITH the 9
+ * (5581982267438). Insert it when missing so replies actually reach BR users.
+ */
+function normalizeRecipient(to) {
+  const n = String(to).replace(/\D/g, '');
+  // 55 (country) + DDD (2) + subscriber (8) = 12 digits; mobile subscriber starts 6-9
+  if (n.length === 12 && n.startsWith('55')) {
+    const ddd = n.slice(2, 4);
+    const subscriber = n.slice(4);
+    if (/^[6-9]/.test(subscriber)) {
+      return `55${ddd}9${subscriber}`;
+    }
+  }
+  return n;
+}
+
 async function graphFetch(url, options = {}) {
   const res = await fetch(url, {
     ...options,
@@ -36,7 +54,7 @@ async function sendText(to, body) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       messaging_product: 'whatsapp',
-      to,
+      to: normalizeRecipient(to),
       type: 'text',
       text: { body }
     })
@@ -91,7 +109,7 @@ async function sendSticker(to, webpPath) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       messaging_product: 'whatsapp',
-      to,
+      to: normalizeRecipient(to),
       type: 'sticker',
       sticker: { id: mediaId }
     })
