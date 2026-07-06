@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:3001/api/stickers';
+// In production, the API is on the same domain. In dev, it's on port 3001.
+const API_URL = import.meta.env.PROD 
+  ? '/api/stickers' 
+  : 'http://localhost:3001/api/stickers';
 
 export const convertToSticker = async (file, options = {}) => {
   const formData = new FormData();
